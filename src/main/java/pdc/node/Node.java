@@ -139,8 +139,10 @@ public class Node {
 				sendSetupData((RebuildRequest) data);
                 return;
 			case "ServiceItem$ValidationRequest":
-				ValidationData v = new ValidationData(aboutMe, messaging.getChecksums());
-				sendSetupData((RebuildRequest) data);
+				sendValidationData((ValidationRequest) data);
+                return;
+			case "ServiceItem$ValidationData":
+				messaging.sendNode((ValidationData) data, aboutMe);
                 return;
 			case "ServiceItem$DataRequest":
 				sendDataItem((DataRequest) data);
@@ -344,6 +346,15 @@ public class Node {
 				RebuildRequest r = (RebuildRequest) data;
 				Thread newThread = new Thread(() -> messaging.sendNode((SetupData) data, r.getOriginalNode()));
 				newThread.start();
+			}
+			else if(data instanceof ValidationRequest) {
+				ValidationRequest r = (ValidationRequest) data;
+				ValidationData d = new ValidationData(aboutMe, null);
+				Thread newThread = new Thread(() -> messaging.sendNode(d, r.getOriginalNode()));
+				newThread.start();
+			}
+			else if(data instanceof PingMessage) {
+				sendPingReply((PingMessage) data);
 			}
 			else if(data instanceof UnpauseMessage) { break; }
 		}

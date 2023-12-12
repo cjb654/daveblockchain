@@ -441,9 +441,12 @@ public class DataSerialisation {
             return null;
         }
         if(data instanceof ValidationRequest ) {
+            /*
             ValidationRequest r = (ValidationRequest) data;
             ValidationData d = new ValidationData(node, getChecksums());
             sendNode(d, r.getOriginalNode());
+            return null;
+            */
             return null;
         }
         if(data instanceof PingMessage) {
@@ -520,6 +523,7 @@ public class DataSerialisation {
             if(data instanceof ValidationData) { validationData = (ValidationData) data; break; }
         }
         String[] compare = validationData.getChecksums();
+        if(compare == null) { return true;}
         if(isDataSame(compare)) { return true; }
         return false;
     }
